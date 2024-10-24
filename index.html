@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            padding: 10px 0;
+            background: #e1bde2;
+            color: white;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background: red;
+            color: white;
+            border-radius: 50%;
+            padding: 3px 6px;
+            font-size: 12px;
+        }
+
+        .items {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+        }
+
+        .item {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            margin: 10px;
+            padding: 15px;
+            width: calc(25% - 20px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .item:hover {
+            transform: scale(1.02);
+        }
+
+        .item img {
+            max-width: 100%;
+            width: 200px;
+            height: 200px;
+            border-radius: 5px;
+        }
+
+        .item-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .item-price {
+            color: #28a745;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .add-to-cart {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+
+        .add-to-cart:hover {
+            background-color: #0056b3;
+        }
+
+        #cart {
+          
+    color: black;
+    margin-top: 20px;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    display: none;
+    width: 40%;
+    right: 0;
+    background: white;
+    position: absolute;
+    top: 28px;
+    padding: 30px;
+        }
+
+        #cart-items {
+            margin: 15px 0;
+        }
+        #cart-items div{
+            display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+        }
+
+       
+            #total-price {
+    font-size: 20px;
+    font-weight: bold;
+    color: #2f2c2c;
+    width: 100%;
+    padding: 20px;
+    /* border: 1px solid grey; */
+    background: #e1bde2;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h2>BOOK STORE</h2>
+        <div class="cart-icon" id="cart-icon">
+            🛒 <span class="cart-count" id="cart-count">0</span>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="items"></div>
+        <div id="cart">
+            <h2>Your Cart</h2>
+            <div id="cart-items"></div>
+            <p id="total-price"></p>
+        </div>
+    </div>
+    <script>
+        class Item {
+            constructor(name, price, image) {
+                this.name = name;
+                this.price = price;
+                this.image = image;
+            }
+    
+            get() {
+                return `
+                <div class="item">
+                    <img src="${this.image}" alt="${this.name}">
+                    <span class="item-name">${this.name}</span>
+                    <span class="item-price">$${this.price}</span>
+                    <button class="add-to-cart" data-name="${this.name}" data-price="${this.price}" data-image="${this.image}">Add to Cart</button>
+                </div>`;
+            }
+        }
+    
+        let products = [
+            new Item("Green Serenade", 400, "book4.jpeg"),
+            new Item("Under My Umbrella", 500, "book5.jpeg"),
+            new Item("Girl in the Glass Case", 350, "girlintheglasscase.jpeg"),
+            new Item("verity", 310, "verity.jpeg"),
+            new Item("it ends with us", 910, "book6.jpeg"),
+            new Item("guide to murder", 510, "book3.jpeg")
+        ];
+    
+        const itemProduct = document.querySelector(".items");
+        products.forEach(product => {
+            itemProduct.innerHTML += `${product.get()}`;
+        });
+    
+        const shoppingCart = (function() {
+            const cart = []; // Private array to store cart items
+    
+            return {
+                addItem: function(image, item, price) {
+                    const existingItem = cart.find(cartItem => cartItem.item === item);
+                    if (existingItem) {
+                        existingItem.qty++;
+                    } else {
+                        cart.push({ image, item, price: parseFloat(price), qty: 1 });
+                    }
+                    this.updateCartDisplay();
+                },
+                viewCart: function() {
+                    return cart;
+                },
+                calculateTotal: function() {
+                    return cart.reduce((total, cartItem) => total + (cartItem.price * cartItem.qty), 0);
+                },
+                updateCartDisplay: function() {
+                    const cartItemsDiv = document.getElementById("cart-items");
+                    cartItemsDiv.innerHTML = ""; // Clear previous items
+                    this.viewCart().forEach(cartItem => {
+                        const itemElement = document.createElement("div");
+                        itemElement.innerHTML = `<img src="${cartItem.image}" width="50"> ${cartItem.item} (x${cartItem.qty}): $${(cartItem.price * cartItem.qty).toFixed(2)}
+                        <button class="remove-item" data-name="${cartItem.item}">X</button>`;
+                        cartItemsDiv.appendChild(itemElement);
+                    });
+                    this.updateCartCount();
+                    this.updateTotalPrice();
+    
+                    // Attach remove item functionality
+                    document.querySelectorAll('.remove-item').forEach(button => {
+                        button.addEventListener('click', (e) => {
+                            const itemName = e.target.getAttribute('data-name');
+                            this.removeItem(itemName);
+                        });
+                    });
+                },
+                updateCartCount: function() {
+                    const cartCount = document.getElementById("cart-count");
+                    cartCount.textContent = this.viewCart().reduce((count, cartItem) => count + cartItem.qty, 0);
+                },
+                updateTotalPrice: function() {
+                    const total = this.calculateTotal();
+                    document.getElementById("total-price").textContent = `Total Price: $${total.toFixed(2)}`;
+                },
+                removeItem: function(item) {
+                    const existingItem = cart.find(cartItem => cartItem.item === item);
+                    if (existingItem) {
+                        existingItem.qty--;
+                        if (existingItem.qty === 0) {
+                            const itemIndex = cart.indexOf(existingItem);
+                            cart.splice(itemIndex, 1);
+                        }
+                    }
+                    this.updateCartDisplay();
+                }
+            };
+        })();
+    
+        // Wait until the DOM is fully loaded before attaching event listeners
+        window.onload = function() {
+            // Event listeners for adding items to the cart
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemImage = this.getAttribute('data-image');
+                    const itemName = this.getAttribute('data-name');
+                    const itemPrice = this.getAttribute('data-price');
+                    shoppingCart.addItem(itemImage, itemName, itemPrice);
+                });
+            });
+    
+            // Event listener for cart icon click
+            document.getElementById('cart-icon').addEventListener('click', function() {
+                const cartDiv = document.getElementById('cart');
+                cartDiv.style.display = cartDiv.style.display === 'none' ? 'block' : 'none'; // Toggle cart display
+            });
+        };
+    </script>
+    
+</body>
+</html>

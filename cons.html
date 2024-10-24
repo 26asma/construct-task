@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Collection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+ul{
+    list-style: none;
+}
+li{
+    padding: 3px;
+}
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            gap: 5px;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background: black;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 3em;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .book-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 25px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .book-card {
+            background:#333;
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .book-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .book-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .book-details {
+            padding: 20px;
+        }
+
+        .book-details h2 {
+            font-size: 1.5em;
+            margin: 10px 0;
+       
+        }
+
+        .book-details p {
+            margin: 10px 0;
+            font-size: 1.1em;
+        
+        }
+
+        .book-details .ebook-label {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .book-details .printed-label {
+            background: linear-gradient(135deg, #fa709a, #fee140);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Book Collection</h1>
+    <div class="book-container" id="ebookCard"></div>
+    <div class="book-container" id="printedBookCard"></div>
+
+    <script>
+        // Base class for books
+        class Book {
+            constructor(title, author, publishedYear, image) {
+                this.title = title;
+                this.author = author;
+                this.publishedYear = publishedYear;
+                this.image = image; 
+            }
+
+            getBookDetails() {
+                return `<ul><li><b>Title</b>: ${this.title}</li>
+                     <li><b>Author</b>: ${this.author}</li>
+                     <li> <b>Year</b>: ${this.publishedYear}</li>`;
+            }
+        }
+
+        // EBook class (extends Book)
+        class EBook extends Book {
+            constructor(title, author, publishedYear, fileSize, format, image) {
+                super(title, author, publishedYear, image); // Pass image to parent class
+                this.fileSize = fileSize;
+                this.format = format;
+            }
+
+            getEBookDetails() {
+                return `${this.getBookDetails()}<li> <b>File Size</b>: ${this.fileSize}MB</li>
+                <li><b>Format</b>: ${this.format}</li>`;
+            }
+        }
+
+        // PrintedBook class (extends Book)
+        class PrintedBook extends Book {
+            constructor(title, author, publishedYear, numberOfPages, coverType, image) {
+                super(title, author, publishedYear, image); // Pass image to parent class
+                this.numberOfPages = numberOfPages;
+                this.coverType = coverType;
+            }
+
+            getPrintedBookDetails() {
+                return `${this.getBookDetails()}
+                <li><b> Pages:</b> ${this.numberOfPages}</li>
+                <li> <b>Cover:</b> ${this.coverType}</li>`;
+            }
+        }
+
+        // Creating multiple books with images
+        const ebooks = [
+            new EBook("Green Serenade", "Anthology", 2021, 190, "PDF", "book4.jpeg"),
+            new EBook("Under My Umbrella", "Anthology", 2022, 210, "PDF", "book5.jpeg"),
+            new EBook("Girl in the glass case", "Devashish Saradana", 2020, 430, "PDF", "girlintheglasscase.jpeg")
+        ];
+
+        const printedBooks = [
+            new PrintedBook("Verity", "Collen Hoover", 2019, 300, "Hardcover", "verity.jpeg"),
+            new PrintedBook("A Good Girl Guide to Murder", "Holly Jackson", 2021, 250, "Paperback", "book3.jpeg"),
+            new PrintedBook("It Ends With us", "Colleen Hoover", 2018, 400, "Hardcover", "book6.jpeg")
+        ];
+
+        // Displaying the eBooks with images
+        const ebookContainer = document.getElementById("ebookCard");
+        ebooks.forEach(ebook => {
+            ebookContainer.innerHTML += `
+                <div class="book-card">
+                    <img src="${ebook.image}" alt="${ebook.title}" class="book-image">
+                    <div class="book-details">
+                        <span class="ebook-label">EBook</span>
+                        <h2>${ebook.title}</h2>
+                        <p>${ebook.getEBookDetails()}</p>
+                    </div>
+                </div>
+            `;
+        });
+
+        // Displaying the printed books with images
+        const printedBookContainer = document.getElementById("printedBookCard");
+        printedBooks.forEach(printedBook => {
+            printedBookContainer.innerHTML += `
+                <div class="book-card">
+                    <img src="${printedBook.image}" alt="${printedBook.title}" class="book-image">
+                    <div class="book-details">
+                        <span class="printed-label">Printed Book</span>
+                        <h2>${printedBook.title}</h2>
+                        <p>${printedBook.getPrintedBookDetails()}</p>
+                    </div>
+                </div>
+            `;
+        });
+      
+    </script>
+</body>
+</html>

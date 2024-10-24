@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Story Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 50%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin: 20px 0;
+        }
+        input {
+            padding: 10px;
+            width: 80%;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .story-output {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            font-size: 1.2em;
+        }
+        .story-image {
+            width: 100%;
+            height: auto;
+            margin-top: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Interactive Story Generator</h1>
+        
+        <form id="storyForm">
+            <label for="name">Enter a character name:</label>
+            <input type="text" id="name" placeholder="Character name" required>
+            
+            <label for="place">Enter a location:</label>
+            <input type="text" id="place" placeholder="Location" required>
+            
+            <label for="object">Enter an object:</label>
+            <input type="text" id="object" placeholder="Object" required>
+            
+            <button type="submit">Generate Story</button>
+        </form>
+        
+        <div id="storyOutput" class="story-output"></div>
+        <img id="storyImage" class="story-image" alt="Story Visual">
+    </div>
+
+    <script>
+        document.getElementById('storyForm').addEventListener('submit', function(event) {
+            event.preventDefault();  // Prevent form submission
+
+            // Get user inputs
+            const characterName = document.getElementById('name').value;
+            const location = document.getElementById('place').value;
+            const object = document.getElementById('object').value;
+
+            // Generate a story template
+            const storyTemplate = `
+                Once upon a time, there was a brave hero named ${characterName}. 
+                ${characterName} lived in the distant land of ${location}, where strange things often happened.
+                One day, ${characterName} stumbled upon a mysterious ${object}. Little did they know, this ${object} would change their life forever.
+                What happened next? Well, that's a story for another day!
+            `;
+
+            // Display the generated story
+            document.getElementById('storyOutput').innerHTML = storyTemplate;
+
+            // Show a random visual based on the location or object
+            const image = document.getElementById('storyImage');
+            if (object.toLowerCase() === 'sword') {
+                image.src = 'https://example.com/sword-image.jpg'; // Replace with real image URL
+            } else if (location.toLowerCase() === 'forest') {
+                image.src = 'https://example.com/forest-image.jpg'; // Replace with real image URL
+            } else {
+                image.src = 'https://example.com/mystery-object.jpg'; // Default image
+            }
+            image.style.display = 'block'; // Show the image
+        });
+    </script>
+
+</body>
+</html>
